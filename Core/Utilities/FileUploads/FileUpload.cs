@@ -1,43 +1,36 @@
 ﻿using System;
 using System.IO;
 using Core.Utilities.Results;
-using Microsoft.AspNetCore.Http; 
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Utilities.FileUploads
 {
     public class FileUpload
     {
-        private static string _currentDirectory = Environment.CurrentDirectory+ "\\wwwroot";
+        private static string _currentDirectory = Environment.CurrentDirectory + "\\wwwroot";
         private static string _folderName = "\\images\\";
-        private static string _randomName = Guid.NewGuid().ToString();
         
         public static IResult Upload(IFormFile file)
         {
-            try
-            {
                 var fileExists = CheckFileExists(file);
                 if (fileExists.Message != null)
                 {
-                    return fileExists;
+                    return new ErrorResult(fileExists.Message);
                 }
 
                 var type = Path.GetExtension(file.FileName);
                 var typeValid = CheckFileTypeValid(type);
+                var randomName =  Guid.NewGuid().ToString();
 
                 if (typeValid.Message != null)
                 {
-                    return typeValid;
+                    return new ErrorResult(typeValid.Message);
                 }
 
                 CheckDirectoryExists(_currentDirectory + _folderName);
-                CreateImageFile(_currentDirectory + _folderName+ _randomName+type, file);
-                return new SuccessResult(_folderName+ _randomName+type);
-
-            }
-            catch (Exception e)
-            {
-                return new ErrorResult(e.Message);
-            }
+                CreateImageFile(_currentDirectory + _folderName+ randomName+type, file);
+                return new SuccessResult((_folderName+ randomName+type).Replace("\\", "/"));
+                
             
 
         }
@@ -47,27 +40,28 @@ namespace Core.Utilities.FileUploads
             var fileExists = CheckFileExists(file);
             if (fileExists.Message != null)
             {
-                return fileExists;
+                return new ErrorResult(fileExists.Message);
             }
             
             var type = Path.GetExtension(file.FileName);
             var typeValid = CheckFileTypeValid(type);
+            var randomName =  Guid.NewGuid().ToString();
 
             if (typeValid.Message != null)
             {
-                return typeValid;
+                return new ErrorResult(typeValid.Message);
             }
             
-            var path = "\\wwwroot" + imagePath;
-            DeleteOldImageFile(path);
+            DeleteOldImageFile((_currentDirectory+imagePath).Replace("/", "\\"));
             CheckDirectoryExists(_currentDirectory + _folderName);
-            CreateImageFile(_currentDirectory + _folderName+ _randomName+type, file);
-            return new SuccessResult(_folderName+ _randomName+type);
+            CreateImageFile(_currentDirectory + _folderName+ randomName+type, file);
+            return new SuccessResult((_folderName+ randomName+type).Replace("\\", "/"));
         }
 
-        public IResult Delete(string path)
+        public static IResult Delete(string path)
         {
-            throw new System.NotImplementedException();
+            DeleteOldImageFile((_currentDirectory+path).Replace("/", "\\"));
+            return new SuccessResult();
         }
 
 
@@ -101,7 +95,7 @@ namespace Core.Utilities.FileUploads
         }
         private static void CreateImageFile(string directory , IFormFile file)
         {
-            using (FileStream fs = File.Create(directory ))
+            using (FileStream fs = File.Create(directory))
             {
                 file.CopyTo(fs);
                 fs.Flush();
