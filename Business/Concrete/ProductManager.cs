@@ -10,6 +10,7 @@ using System.Linq;
 using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using DataAccess.Concrete.EntityFramework;
@@ -26,6 +27,7 @@ namespace Business.Concrete
             _productDal = productDal;
         }
          
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             // İş Kodları
@@ -47,6 +49,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max), Messages.ProductListed);
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId), Messages.ProductListed);
@@ -75,6 +78,7 @@ namespace Business.Concrete
         }
         
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             throw new NotImplementedException();
