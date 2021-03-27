@@ -9,8 +9,22 @@
           <div class="form-group">
             <input type="text" id="productName" formControlName="productName" class="form-control" placeholder="Name" />
           </div>
+          <div class="form-group">
+            <input type="number" id="categoryId" formControlName="categoryId" class="form-control"
+              placeholder="Category" />
+          </div>
+          <div class="form-group">
+            <input type="number" id="unitsInStock" formControlName="unitsInStock" class="form-control"
+              placeholder="Units in stock" />
+          </div>
+          <div class="form-group">
+            <input type="number" id="unitPrice" formControlName="unitPrice" class="form-control" placeholder="Price" />
+          </div>
         </form>
 
+      </div>
+      <div class="card-footer">
+        <div class="btn btn-fill btn-primary" (click)="add()">Ekle</div>
       </div>
     </div>
 

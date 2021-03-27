@@ -2,6 +2,17 @@
   <span class="sr-only">Loading...</span>
 </div>
 
+<div class="form-group">
+  <label for="filterText">Search Product</label>
+  <input type="text" [(ngModel)]='filterText' class="form-control" id="filterText" placeholder="Search an product">
+</div>
+
+
+<div *ngIf="filterText" class="alert alert-success">
+  {{filterText}} aradınız
+</div>
+
+
 <table *ngIf="dataLoaded == true" class="table">
   <thead>
     <tr>
@@ -9,14 +20,18 @@
       <th>Name</th>
       <th>Category</th>
       <th>Price</th>
+      <th>Prive with KDV</th>
       <th>Stock</th>
+      <th></th>
     </tr>
   </thead>
-  <tr *ngFor="let product of products">
-    <td> {{ product.productId}} </td>
-    <td> {{ product.productName}} </td>
-    <td> {{ product.categoryId}} </td>
-    <td> {{ product.unitPrice }} </td>
+  <tr *ngFor="let product of products | filterPipe:filterText">
+    <td> {{ product.productId }} </td>
+    <td> {{ product.productName | uppercase }} </td>
+    <td> {{ product.categoryId }} </td>
+    <td> {{ product.unitPrice | currency}} </td>
+    <td> {{ product.unitPrice |vatAdded:18 | currency}} </td>
     <td> {{ product.unitsInStock }} </td>
+    <td> <button (click)="addToCart(product)" class="btn btn-success">Add to cart</button> </td>
   </tr>
 </table>

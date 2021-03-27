@@ -60,7 +60,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails(), Messages.ProductListed);
         }
 
-        [SecuredOperation("admin,editor")]
+        // [SecuredOperation("admin,editor")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
@@ -89,7 +89,7 @@ namespace Business.Concrete
             var itemCount = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
             if (itemCount >= 10)
             {
-                return new ErrorResult("Fazla");
+                return new ErrorResult("One category must have less than 10 product.");
             }
 
             return new SuccessResult();

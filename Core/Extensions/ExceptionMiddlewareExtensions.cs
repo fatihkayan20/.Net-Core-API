@@ -1,7 +1,12 @@
-﻿namespace Core.Extensions
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace Core.Extensions
 {
-    public class a
+    public static class ExceptionMiddlewareExtensions
     {
-        
+        public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+        }
     }
 }
