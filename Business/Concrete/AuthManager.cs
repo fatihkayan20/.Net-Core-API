@@ -40,12 +40,12 @@ namespace Business.Concrete
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
             if (userToCheck==null)
             {
-                return new ErrorDataResult<User>("User Not Found");
+                return new ErrorDataResult<User>("Invalid username or password");
             }
 
             if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password,userToCheck.PasswordHash,userToCheck.PasswordSalt))
             {
-                return new ErrorDataResult<User>("Wrong password");            }
+                return new ErrorDataResult<User>("Invalid username or password");            }
 
             return new SuccessDataResult<User>(userToCheck,"Login successfully");
         }

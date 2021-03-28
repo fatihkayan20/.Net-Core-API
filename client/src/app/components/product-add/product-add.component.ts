@@ -41,8 +41,7 @@ export class ProductAddComponent implements OnInit {
           );
         },
         (err) => {
-          if (err.error.Errors.length > 0) {
-            console.log(err.error.Errors);
+          if (err.error.Errors?.length > 0) {
             err.error.Errors.map((i: any) => {
               this.toastrService.error(i.ErrorMessage);
             });

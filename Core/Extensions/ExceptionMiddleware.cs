@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
@@ -48,6 +49,18 @@ namespace Core.Extensions
                     StatusCode = 400,
                     Message = message,
                     Errors =errors
+                }.ToString());
+            }
+            
+            if (e.GetType()==typeof(AuthenticationException))
+            {
+                message = e.Message;
+                httpContext.Response.StatusCode = 400;
+
+                return httpContext.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = 400,
+                    Message = message,
                 }.ToString());
             }
 
